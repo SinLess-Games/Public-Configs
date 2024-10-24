@@ -129,7 +129,7 @@ fi
 # Download Powerlevel10k configuration file if it doesn't exist
 if [ ! -f ~/.p10k.zsh ]; then
   log_info "Downloading Powerlevel10k configuration file..."
-  curl -L -o ~/.p10k.zsh https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/.p10k.zsh >/dev/null 2>&1
+  curl -L -o ~/.p10k.zsh https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/zsh/.p10k.zsh >/dev/null 2>&1
 fi
 
 # Set the theme to Powerlevel10k
