@@ -316,16 +316,33 @@ function reload() {
 }
 
 # -----------------------------------------------------------------------------------------
-# Section 14: Uninstall Package
+# Section 14: Uninstall and Revert to Default Zsh Configuration
 # -----------------------------------------------------------------------------------------
 function uninstall() {
-  read -p "Are you sure you want to uninstall $1? (y/N) " -n 1 -r
+  read -p "Are you sure you want to uninstall all traces of the custom Zsh configuration? (y/N) " -n 1 -r
+  echo
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    sudo apt remove -y $1
-    yq d -i .configs/apt-packages.yaml "packages[==\"$1\"]"
-    install_apt_packages_from_yaml
+    log_info "Removing custom Zsh configuration..."
+
+    # Remove oh-my-zsh and related themes/plugins
+    rm -rf ~/.oh-my-zsh
+    rm -rf ~/.p10k.zsh
+
+    # Reset to default Zsh configuration
+    log_info "Restoring default Zsh configuration..."
+    curl -L -o ~/.zshrc https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/zsh/default.zshrc > /dev/null 2>&1
+    source ~/.zshrc
+
+    # Remove installed apt packages
+    for package in "${REQUIRED_APT_PACKAGES[@]}"; do
+      log_info "Uninstalling $package..."
+      sudo apt purge -y $package >/dev/null 2>&1
+    done
+    sudo apt autoremove -y >/dev/null 2>&1
+
+    log_info "Uninstallation complete. Default Zsh configuration restored."
   else
-    echo "Uninstall cancelled"
+    log_info "Uninstall cancelled."
   fi
 }
 
