@@ -12,48 +12,45 @@
 #
 # Note: Make sure to update the base URL and script names as needed.
 # ------------------------------------------------------------------------------
-function setup_homebrew() {
 
-  # check if utils.zsh exists if not install it from repo
-  if [ ! -f "$HOME/.zsh/utils.zsh" ]; then
-      log_info "utils.zsh not found. Downloading from the repository..."
-      curl -o "$HOME/.zsh/utils.zsh" "https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/utils.zsh"
-      "utils.zsh downloaded successfully!"
-  fi
+# check if utils.zsh exists if not install it from repo
+if [ ! -f "$HOME/.zsh/utils.zsh" ]; then
+    log_info "utils.zsh not found. Downloading from the repository..."
+    curl -o "$HOME/.zsh/utils.zsh" "https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/utils.zsh"
+     "utils.zsh downloaded successfully!"
+fi
 
-  # ------------------------------------------------------------------------------
-  # Section 1: download the scripts folder and load scripts
-  # ------------------------------------------------------------------------------
-  # check if the scripts folder exists
-  if [ ! -d "$HOME/.zsh/scripts" ]; then
-      log_info "Scripts folder not found. Downloading from the repository..."
+# ------------------------------------------------------------------------------
+# Section 1: download the scripts folder and load scripts
+# ------------------------------------------------------------------------------
+# check if the scripts folder exists
+if [ ! -d "$HOME/.zsh/scripts" ]; then
+    log_info "Scripts folder not found. Downloading from the repository..."
 
-      # Create the scripts folder
-      mkdir -p "$HOME/.zsh/scripts"
+    # Create the scripts folder
+    mkdir -p "$HOME/.zsh/scripts"
 
-      # Base URL for the GitHub repo where scripts are located
-      base_url="https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/scripts/"
+    # Base URL for the GitHub repo where scripts are located
+    base_url="https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/scripts/"
 
-      # List of scripts to download
-      scripts=("anscii.zsh" "homebrew.zsh")  # Add other script names here
+    # List of scripts to download
+    scripts=("anscii.zsh" "homebrew.zsh")  # Add other script names here
 
-      # Download each script from the GitHub repo
-      for script in "${scripts[@]}"; do
-          curl -o "$HOME/.zsh/scripts/$script" "${base_url}${script}"
-      done
+    # Download each script from the GitHub repo
+    for script in "${scripts[@]}"; do
+        curl -o "$HOME/.zsh/scripts/$script" "${base_url}${script}"
+    done
 
-      log_info "Scripts downloaded successfully!"
-  fi
+    log_info "Scripts downloaded successfully!"
+fi
 
-  # ------------------------------------------------------------------------------
-  # Section 2: source the scripts
-  # ------------------------------------------------------------------------------
-  # Source all scripts in the scripts folder
-  for script in "$HOME/.zsh/scripts/"*.zsh; do
-      if [ -f "$script" ]; then
-          source "$script"
-          log_info "Loaded $script"
-      fi
-  done
-
-}
+# ------------------------------------------------------------------------------
+# Section 2: source the scripts
+# ------------------------------------------------------------------------------
+# Source all scripts in the scripts folder
+for script in "$HOME/.zsh/scripts/"*.zsh; do
+    if [ -f "$script" ]; then
+        source "$script"
+        log_info "Loaded $script"
+    fi
+done

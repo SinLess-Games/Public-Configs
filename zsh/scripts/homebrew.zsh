@@ -25,3 +25,5 @@ if [ -f "$HOME/Brewfile" ]; then
     log_info "Installing brew packages from Brewfile"
     brew bundle --file="$HOME/Brewfile"
 fi
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
