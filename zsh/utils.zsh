@@ -18,3 +18,29 @@ function log_error() {
     local msg="$1"
     echo -e "\e[1;31m❌ ERROR: \e[0m$msg"
 }
+
+# ------------------------------------------------------------------------------
+# Section configure environment
+# ------------------------------------------------------------------------------
+# Set the default editor to nano
+export EDITOR="nano"
+
+# allow direnv
+eval "$(direnv hook zsh)"
+
+# activate ssh agent and install it if it doesn't exist
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    eval "$(ssh-agent -s)"
+fi
+
+# add local and usr bin to path
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="/usr/local/bin:$PATH"
+
+# zsh completion
+autoload -Uz compinit
+compinit
+
+# ZSH environment variables
+export ZSH="/home/sinless/.oh-my-zsh"
+export ZSH_CUSTOM="$ZSH/custom"

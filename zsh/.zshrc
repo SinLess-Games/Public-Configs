@@ -15,9 +15,9 @@
 
 # check if utils.zsh exists if not install it from repo
 if [ ! -f "$HOME/.zsh/utils.zsh" ]; then
-    echo "utils.zsh not found. Downloading from the repository..."
+    log_info "utils.zsh not found. Downloading from the repository..."
     curl -o "$HOME/.zsh/utils.zsh" "https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/utils.zsh"
-    echo "utils.zsh downloaded successfully!"
+     "utils.zsh downloaded successfully!"
 fi
 
 # ------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ if [ ! -d "$HOME/.zsh/scripts" ]; then
     base_url="https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/scripts/"
 
     # List of scripts to download
-    scripts=("anscii.zsh" "other_script1.zsh" "other_script2.zsh")  # Add other script names here
+    scripts=("anscii.zsh" "homebrew.zsh")  # Add other script names here
 
     # Download each script from the GitHub repo
     for script in "${scripts[@]}"; do
