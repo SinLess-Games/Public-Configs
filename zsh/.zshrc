@@ -25,7 +25,7 @@ fi
 # ------------------------------------------------------------------------------
 # check if the scripts folder exists
 if [ ! -d "$HOME/.zsh/scripts" ]; then
-    echo "Scripts folder not found. Downloading from the repository..."
+    log_info "Scripts folder not found. Downloading from the repository..."
 
     # Create the scripts folder
     mkdir -p "$HOME/.zsh/scripts"
@@ -41,7 +41,7 @@ if [ ! -d "$HOME/.zsh/scripts" ]; then
         curl -o "$HOME/.zsh/scripts/$script" "${base_url}${script}"
     done
 
-    echo "Scripts downloaded successfully!"
+    log_info "Scripts downloaded successfully!"
 fi
 
 # ------------------------------------------------------------------------------
@@ -51,6 +51,6 @@ fi
 for script in "$HOME/.zsh/scripts/"*.zsh; do
     if [ -f "$script" ]; then
         source "$script"
-        echo "Loaded $script"
+        log_info "Loaded $script"
     fi
 done
