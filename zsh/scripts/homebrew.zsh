@@ -13,8 +13,8 @@ if [ -f "/opt/homebrew/share/zsh/site-functions/_brew" ]; then
     fpath+=("/opt/homebrew/share/zsh/site-functions")
 fi
 
-# Configure Homebrew in the shell
-eval "$(/opt/homebrew/bin/brew shellenv)"
+    # Configure Homebrew in the shell
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # Update Homebrew
 log_info "Updating Homebrew"
