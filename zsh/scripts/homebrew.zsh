@@ -27,3 +27,9 @@ if [ -f "$HOME/Brewfile" ]; then
 fi
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+
+function uninstall_homebrew() {
+    log_info "Uninstalling Homebrew"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+}
