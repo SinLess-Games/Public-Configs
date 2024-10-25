@@ -349,6 +349,7 @@ function uninstall() {
 # -----------------------------------------------------------------------------------------
 # Main Execution
 # -----------------------------------------------------------------------------------------
+reload
 bordered_ascii "SinLess Games LLC"
 display_progress_bar
 log_info "Setting up Zsh development environment..."
