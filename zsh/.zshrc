@@ -39,8 +39,6 @@ SAVEHIST=1000
 setopt hist_ignore_dups
 autoload -Uz compinit && compinit
 
-alias reload="cp .zshrc ~/.zshrc && source ~/.zshrc"
-
 # -----------------------------------------------------------------------------------------
 
 # Section 1: ASCII Art
@@ -273,6 +271,19 @@ function update_prompt_with_virtual_env() {
 if [[ -n "$VIRTUAL_ENV" ]]; then
   update_prompt_with_virtual_env
 fi
+
+# -----------------------------------------------------------------------------------------
+# Section 9: Reload Zsh Configuration
+# -----------------------------------------------------------------------------------------
+
+function reload() {
+  curl -L -o ~/.p10k.zsh https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/zsh/.p10k.zsh > /dev/null 2>&1
+
+  curl -L -o ~/.zshrc https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/zsh/.zshrc > /dev/null 2>&1
+
+  # Reload the Zsh configuration
+  source ~/.zshrc
+}
 
 # -----------------------------------------------------------------------------------------
 # Main Execution
