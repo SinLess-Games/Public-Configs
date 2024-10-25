@@ -14,7 +14,7 @@ This will download the configuration file and apply it immediately, setting up y
 
 ## 📋 Requirements
 
-This configuration requires a `~/.config/SinlessGames/packages.yaml` file to be properly set up. Make sure to create and configure the following file before installation:
+This configuration requires a `~/.config/SinlessGames/apt-packages.yaml` file to be properly set up. Make sure to create and configure the following file before installation:
 
 ```yaml
 packages:
