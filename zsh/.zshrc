@@ -34,7 +34,7 @@ if [ ! -d "$HOME/.zsh/scripts" ]; then
     base_url="https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/scripts/"
 
     # List of scripts to download
-    scripts=("anscii.zsh" "homebrew.zsh")  # Add other script names here
+    scripts=("anscii.zsh" "homebrew.zsh", "zsh-plugins.zsh")  # Add other script names here
 
     # Download each script from the GitHub repo
     for script in "${scripts[@]}"; do

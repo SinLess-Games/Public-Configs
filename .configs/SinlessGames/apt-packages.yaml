@@ -1,0 +1,8 @@
+packages:
+  - git
+  - curl
+  - zsh
+  - nmap
+  - net-tools
+  - pipx
+  - wget
