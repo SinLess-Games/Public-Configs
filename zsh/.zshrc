@@ -8,8 +8,6 @@
 # -----------------------------------------------------------------------------------------
 # Homebrew Installation (Non-interactive mode)
 # -----------------------------------------------------------------------------------------
-# This section installs Homebrew in non-interactive mode if it is not already installed.
-# Homebrew is used to install various command-line tools that are required by the configuration.
 if ! command -v brew &>/dev/null; then
   echo "Installing Homebrew..."
   /bin/bash -c "NON_INTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" </dev/null
@@ -21,8 +19,6 @@ fi
 # -----------------------------------------------------------------------------------------
 # Variables and Configuration
 # -----------------------------------------------------------------------------------------
-# This section contains environment variables, color codes for logging, and Zsh options.
-# These variables and settings help configure and standardize the terminal experience.
 LOG_INFO='\033[1;34m[INFO]\033[0m'
 LOG_WARN='\033[1;33m[WARN]\033[0m'
 LOG_ERROR='\033[1;31m[ERROR]\033[0m'
@@ -39,16 +35,27 @@ SAVEHIST=1000
 setopt hist_ignore_dups
 autoload -Uz compinit && compinit
 
-# -----------------------------------------------------------------------------------------
-# Section 1: ASCII Art
-# -----------------------------------------------------------------------------------------
-# Installs Figlet if it's not present and defines a function called `bordered_ascii` to display
-# ASCII art text with a blue border.
-if ! command -v figlet &>/dev/null; then
-  echo -e "${LOG_INFO} Installing Figlet..."
-  brew install figlet >/dev/null 2>&1
-fi
+# Define required apt packages
+REQUIRED_APT_PACKAGES=(
+  zsh
+  curl
+  figlet
+  yq
+)
 
+# -----------------------------------------------------------------------------------------
+# Section 1: Install Required APT Packages
+# -----------------------------------------------------------------------------------------
+for package in "${REQUIRED_APT_PACKAGES[@]}"; do
+  if ! dpkg -l | grep -q "$package"; then
+    echo -e "${LOG_INFO} Installing $package..."
+    sudo apt install -y "$package" >/dev/null 2>&1
+  fi
+done
+
+# -----------------------------------------------------------------------------------------
+# Section 2: ASCII Art
+# -----------------------------------------------------------------------------------------
 function bordered_ascii() {
   if [ -z "$1" ]; then
     echo -e "${LOG_ERROR} Usage: bordered_ascii <text>"
@@ -60,23 +67,14 @@ function bordered_ascii() {
   GOLD='\033[1;33m'
   RESET='\033[0m'
 
-  # Get terminal width
   term_width=$(tput cols)
-  
-  # Generate the ASCII art using figlet, fitting it within the terminal width
   ascii_art=$(figlet -w "$term_width" "$1")
-  
-  # Determine the length of the longest line in the ASCII art
   max_length=$(echo "$ascii_art" | awk '{ if (length > max) max = length } END { print max }')
-  
-  # Calculate total width for padding (including two spaces on each side)
   padded_length=$((max_length + 4))
 
-  # Generate the top and bottom border using ##
   border=$(printf "%-${padded_length}s" "" | tr ' ' '#')
   border="${BLUE}##${border}##${RESET}"
 
-  # Print the bordered ASCII art with padding
   echo -e "$border"
   echo -e "${BLUE}##${RESET}$(printf "%-${padded_length}s" "")${BLUE}##${RESET}"
   echo "$ascii_art" | while IFS= read -r line; do
@@ -87,9 +85,25 @@ function bordered_ascii() {
 }
 
 # -----------------------------------------------------------------------------------------
-# Section 2: Log Functions
+# Section 3: Progress Bar Function
 # -----------------------------------------------------------------------------------------
-# Defines logging functions for information, warnings, and errors.
+function display_progress_bar() {
+  echo -e "${LOG_INFO} Configuring the environment. This may take a few minutes..."
+  bar=""
+
+  # Progress bar loop
+  for i in {1..50}; do
+    bar+="#"
+    printf "\r[%-50s] %d%%" "$bar" $((i * 2))
+    sleep 0.1
+  done
+
+  echo -e "\n${LOG_INFO} Environment configuration complete."
+}
+
+# -----------------------------------------------------------------------------------------
+# Section 4: Log Functions
+# -----------------------------------------------------------------------------------------
 function log_info() {
   echo -e "${LOG_INFO} $1"
 }
@@ -103,16 +117,8 @@ function log_error() {
 }
 
 # -----------------------------------------------------------------------------------------
-# Section 3: Installing Zsh, Oh My Zsh, and Plugins
+# Section 5: Installing Oh My Zsh, Powerlevel10k, and Plugins
 # -----------------------------------------------------------------------------------------
-# Installs Zsh, Oh My Zsh, Powerlevel10k theme, and several useful Zsh plugins if they are
-# not already installed. Also downloads the Powerlevel10k configuration if it's not present.
-if ! command -v zsh &>/dev/null; then
-  log_info "Installing Zsh..."
-  sudo apt install -y zsh 
-  chsh -s $(which zsh)
-fi
-
 if [ ! -d "$ZSH" ]; then
   log_info "Installing Oh My Zsh..."
   sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" >/dev/null 2>&1
@@ -183,9 +189,8 @@ plugins=(
 )
 
 # -----------------------------------------------------------------------------------------
-# Section 4: Installing Fonts and Other Tools
+# Section 6: Installing Fonts and Other Tools
 # -----------------------------------------------------------------------------------------
-# Installs required fonts using Homebrew or downloads them manually if Homebrew is unavailable.
 if [ ! -d "$HOME/.fonts/fontawesome" ]; then
   if brew install --cask font-awesome >/dev/null 2>&1; then
     log_info "Font Awesome installed successfully."
@@ -207,11 +212,10 @@ if [ ! -d "$HOME/.fonts/hack-nerd-font" ]; then
 fi
 
 # -----------------------------------------------------------------------------------------
-# Section 5: Install Apt Packages from YAML File
+# Section 7: Install Apt Packages from YAML File
 # -----------------------------------------------------------------------------------------
-# This section installs packages specified in a YAML configuration file.
 function install_apt_packages_from_yaml() {
-    local yaml_file="~/.configs/SinlessGames/apt-packages.yaml"
+    local yaml_file="./.configs/apt-packages.yaml"
     if [ -f "$yaml_file" ]; then
         local packages=$(yq e '.packages[]' "$yaml_file")
         log_info "Updating and upgrading apt packages..."
@@ -227,9 +231,45 @@ function install_apt_packages_from_yaml() {
 }
 
 # -----------------------------------------------------------------------------------------
-# Section 6: Display Only Current Folder Name in the Prompt
+# Section 8: Install Brewfile Packages
 # -----------------------------------------------------------------------------------------
-# Configures the prompt to display only the current folder name.
+BREWFILE_PATH="./Brewfile"
+if [ -f "$BREWFILE_PATH" ]; then
+  log_info "Brewfile found. Installing Brewfile packages..."
+  brew bundle --file="$BREWFILE_PATH" >/dev/null 2>&1
+  log_info "Brewfile packages installed."
+fi
+
+# -----------------------------------------------------------------------------------------
+# Section 9: Pipenv Installation and Virtual Environment Setup
+# -----------------------------------------------------------------------------------------
+PIPFILE_PATH="./Pipfile"
+if [ -f "$PIPFILE_PATH" ]; then
+  if ! command -v pipx &>/dev/null; then
+    log_info "Installing pipx..."
+    brew install pipx >/dev/null 2>&1
+    log_info "pipx installed."
+  fi
+
+  if ! command -v pipenv &>/dev/null; then
+    log_info "Installing pipenv via pipx..."
+    pipx install pipenv >/dev/null 2>&1
+  fi
+
+  if [ ! -d ".venv" ]; then
+    log_info "Creating virtual environment using Pipenv with Python 3.13..."
+    pipenv --python 3.13 >/dev/null 2>&1
+    log_info "Installing dependencies from Pipfile..."
+    pipenv install >/dev/null 2>&1
+  else
+    log_info "Activating existing virtual environment..."
+    pipenv shell
+  fi
+fi
+
+# -----------------------------------------------------------------------------------------
+# Section 10: Configuring Prompt to Show Current Folder Name
+# -----------------------------------------------------------------------------------------
 POWERLEVEL9K_SHORTEN_DIR_LENGTH=1
 POWERLEVEL9K_SHORTEN_STRATEGY="truncate_to_last"
 POWERLEVEL9K_DIR_MIN_COMMAND_COLUMNS=40
@@ -237,9 +277,8 @@ POWERLEVEL9K_DIR_SHOW_WRITABLE=false
 PROMPT_DIRTRIM=1
 
 # -----------------------------------------------------------------------------------------
-# Section 7: Aliases
+# Section 11: Aliases
 # -----------------------------------------------------------------------------------------
-# Defines various aliases to simplify terminal commands.
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -251,9 +290,8 @@ alias cls="clear"
 alias cll="clear && ll"
 
 # -----------------------------------------------------------------------------------------
-# Section 8: Show Virtual Environment Information in the Prompt
+# Section 12: Show Virtual Environment Information in the Prompt
 # -----------------------------------------------------------------------------------------
-# This section updates the prompt to show active Python virtual environments.
 function update_prompt_with_virtual_env() {
   if [[ -n "$VIRTUAL_ENV" ]]; then
     VENV_NAME=$(basename "$VIRTUAL_ENV")
@@ -266,13 +304,11 @@ if [[ -n "$VIRTUAL_ENV" ]]; then
 fi
 
 # -----------------------------------------------------------------------------------------
-# Section 9: Reload Zsh Configuration
+# Section 13: Reload Zsh Configuration
 # -----------------------------------------------------------------------------------------
-# This function reloads the Zsh configuration by downloading the latest `.zshrc` and `.p10k.zsh` files.
 function reload() {
   curl -L -o ~/.p10k.zsh https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/zsh/.p10k.zsh > /dev/null 2>&1
   curl -L -o ~/.zshrc https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/zsh/.zshrc > /dev/null 2>&1
-
   source ~/.zshrc
   log_info "Zsh configuration reloaded."
   sleep 4
@@ -280,12 +316,10 @@ function reload() {
 }
 
 # -----------------------------------------------------------------------------------------
-# Section 10: Uninstall Package
+# Section 14: Uninstall Package
 # -----------------------------------------------------------------------------------------
-# This function removes an installed package and updates the apt package list accordingly.
 function uninstall() {
   read -p "Are you sure you want to uninstall $1? (y/N) " -n 1 -r
-
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     sudo apt remove -y $1
     yq d -i .configs/apt-packages.yaml "packages[==\"$1\"]"
@@ -298,8 +332,8 @@ function uninstall() {
 # -----------------------------------------------------------------------------------------
 # Main Execution
 # -----------------------------------------------------------------------------------------
-# Main execution to display ASCII art, log the Zsh setup, and install packages.
 bordered_ascii "SinLess Games LLC"
+display_progress_bar
 log_info "Setting up Zsh development environment..."
 source $ZSH/oh-my-zsh.sh
 precmd_functions+=update_prompt_with_virtual_env
