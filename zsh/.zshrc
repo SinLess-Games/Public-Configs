@@ -8,7 +8,8 @@
 # -----------------------------------------------------------------------------------------
 # Homebrew Installation (Non-interactive mode)
 # -----------------------------------------------------------------------------------------
-
+# This section installs Homebrew in non-interactive mode if it is not already installed.
+# Homebrew is used to install various command-line tools that are required by the configuration.
 if ! command -v brew &>/dev/null; then
   echo "Installing Homebrew..."
   /bin/bash -c "NON_INTERACTIVE=1 $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" </dev/null
@@ -20,13 +21,12 @@ fi
 # -----------------------------------------------------------------------------------------
 # Variables and Configuration
 # -----------------------------------------------------------------------------------------
-
-# ANSI color codes for log levels
+# This section contains environment variables, color codes for logging, and Zsh options.
+# These variables and settings help configure and standardize the terminal experience.
 LOG_INFO='\033[1;34m[INFO]\033[0m'
 LOG_WARN='\033[1;33m[WARN]\033[0m'
 LOG_ERROR='\033[1;31m[ERROR]\033[0m'
 
-# Environment Variables
 export SHELL=/bin/zsh
 export ZSH="$HOME/.oh-my-zsh"
 export ZSH_CUSTOM="$ZSH/custom"
@@ -40,12 +40,10 @@ setopt hist_ignore_dups
 autoload -Uz compinit && compinit
 
 # -----------------------------------------------------------------------------------------
-
 # Section 1: ASCII Art
 # -----------------------------------------------------------------------------------------
-
-
-# Install figlet if it's not installed
+# Installs Figlet if it's not present and defines a function called `bordered_ascii` to display
+# ASCII art text with a blue border.
 if ! command -v figlet &>/dev/null; then
   echo -e "${LOG_INFO} Installing Figlet..."
   brew install figlet >/dev/null 2>&1
@@ -91,7 +89,7 @@ function bordered_ascii() {
 # -----------------------------------------------------------------------------------------
 # Section 2: Log Functions
 # -----------------------------------------------------------------------------------------
-
+# Defines logging functions for information, warnings, and errors.
 function log_info() {
   echo -e "${LOG_INFO} $1"
 }
@@ -107,7 +105,8 @@ function log_error() {
 # -----------------------------------------------------------------------------------------
 # Section 3: Installing Zsh, Oh My Zsh, and Plugins
 # -----------------------------------------------------------------------------------------
-
+# Installs Zsh, Oh My Zsh, Powerlevel10k theme, and several useful Zsh plugins if they are
+# not already installed. Also downloads the Powerlevel10k configuration if it's not present.
 if ! command -v zsh &>/dev/null; then
   log_info "Installing Zsh..."
   sudo apt install -y zsh 
@@ -124,19 +123,14 @@ if [ ! -d "$ZSH_CUSTOM/themes/powerlevel10k" ]; then
   git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k >/dev/null 2>&1
 fi
 
-# Download Powerlevel10k configuration file if it doesn't exist
 if [ ! -f ~/.p10k.zsh ]; then
   log_info "Downloading Powerlevel10k configuration file..."
   curl -L -o ~/.p10k.zsh https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/zsh/.p10k.zsh >/dev/null 2>&1
 fi
 
-# Set the theme to Powerlevel10k
 ZSH_THEME="powerlevel10k/powerlevel10k"
-
-# Load Powerlevel10k configuration if it exists
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Install plugins if they don't exist
 plugins_to_install=(
   "zsh-autosuggestions https://github.com/zsh-users/zsh-autosuggestions"
   "zsh-syntax-highlighting https://github.com/zsh-users/zsh-syntax-highlighting"
@@ -191,7 +185,7 @@ plugins=(
 # -----------------------------------------------------------------------------------------
 # Section 4: Installing Fonts and Other Tools
 # -----------------------------------------------------------------------------------------
-
+# Installs required fonts using Homebrew or downloads them manually if Homebrew is unavailable.
 if [ ! -d "$HOME/.fonts/fontawesome" ]; then
   if brew install --cask font-awesome >/dev/null 2>&1; then
     log_info "Font Awesome installed successfully."
@@ -215,7 +209,7 @@ fi
 # -----------------------------------------------------------------------------------------
 # Section 5: Install Apt Packages from YAML File
 # -----------------------------------------------------------------------------------------
-
+# This section installs packages specified in a YAML configuration file.
 function install_apt_packages_from_yaml() {
     local yaml_file="./.configs/apt-packages.yaml"
     if [ -f "$yaml_file" ]; then
@@ -235,7 +229,7 @@ function install_apt_packages_from_yaml() {
 # -----------------------------------------------------------------------------------------
 # Section 6: Display Only Current Folder Name in the Prompt
 # -----------------------------------------------------------------------------------------
-
+# Configures the prompt to display only the current folder name.
 POWERLEVEL9K_SHORTEN_DIR_LENGTH=1
 POWERLEVEL9K_SHORTEN_STRATEGY="truncate_to_last"
 POWERLEVEL9K_DIR_MIN_COMMAND_COLUMNS=40
@@ -245,7 +239,7 @@ PROMPT_DIRTRIM=1
 # -----------------------------------------------------------------------------------------
 # Section 7: Aliases
 # -----------------------------------------------------------------------------------------
-
+# Defines various aliases to simplify terminal commands.
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -259,7 +253,7 @@ alias cll="clear && ll"
 # -----------------------------------------------------------------------------------------
 # Section 8: Show Virtual Environment Information in the Prompt
 # -----------------------------------------------------------------------------------------
-
+# This section updates the prompt to show active Python virtual environments.
 function update_prompt_with_virtual_env() {
   if [[ -n "$VIRTUAL_ENV" ]]; then
     VENV_NAME=$(basename "$VIRTUAL_ENV")
@@ -267,7 +261,6 @@ function update_prompt_with_virtual_env() {
   fi
 }
 
-# Ensure the virtual environment information is shown when activated
 if [[ -n "$VIRTUAL_ENV" ]]; then
   update_prompt_with_virtual_env
 fi
@@ -275,26 +268,39 @@ fi
 # -----------------------------------------------------------------------------------------
 # Section 9: Reload Zsh Configuration
 # -----------------------------------------------------------------------------------------
-
+# This function reloads the Zsh configuration by downloading the latest `.zshrc` and `.p10k.zsh` files.
 function reload() {
   curl -L -o ~/.p10k.zsh https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/zsh/.p10k.zsh > /dev/null 2>&1
-
   curl -L -o ~/.zshrc https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/zsh/.zshrc > /dev/null 2>&1
 
-  # Reload the Zsh configuration
   source ~/.zshrc
+  log_info "Zsh configuration reloaded."
+  sleep 4
+  clear
+}
+
+# -----------------------------------------------------------------------------------------
+# Section 10: Uninstall Package
+# -----------------------------------------------------------------------------------------
+# This function removes an installed package and updates the apt package list accordingly.
+function uninstall() {
+  read -p "Are you sure you want to uninstall $1? (y/N) " -n 1 -r
+
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    sudo apt remove -y $1
+    yq d -i .configs/apt-packages.yaml "packages[==\"$1\"]"
+    install_apt_packages_from_yaml
+  else
+    echo "Uninstall cancelled"
+  fi
 }
 
 # -----------------------------------------------------------------------------------------
 # Main Execution
 # -----------------------------------------------------------------------------------------
-
+# Main execution to display ASCII art, log the Zsh setup, and install packages.
 bordered_ascii "SinLess Games LLC"
-
 log_info "Setting up Zsh development environment..."
 source $ZSH/oh-my-zsh.sh
-
-# This will run `update_prompt_with_virtual_env` before each new command prompt
 precmd_functions+=update_prompt_with_virtual_env
-
 install_apt_packages_from_yaml
