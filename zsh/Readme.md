@@ -12,6 +12,15 @@ curl -L -o ~/.zshrc https://raw.githubusercontent.com/SinLess-Games/Public-Confi
 
 This will download the configuration file and apply it immediately, setting up your environment in seconds.
 
+## Requirements
+
+This configuration requires a `~/.config/SinlessGames/packages.yaml` file to be properly set up. Make sure to create and configure the following file before installation:
+
+```yaml
+packages:
+  # List your required packages here
+```
+
 ## Inspiration
 
 Managing hundreds of dependencies across various virtual machines can be exhausting. That's why I created a `.zshrc` file that could fully install itself with a single command, and be just as easily uninstalled. This configuration is built to save time and streamline your development workflow.
