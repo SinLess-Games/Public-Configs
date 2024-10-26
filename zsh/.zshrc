@@ -13,6 +13,8 @@
 # Note: Make sure to update the base URL and script names as needed.
 # ------------------------------------------------------------------------------
 
+include "utils.zsh"
+
 # check if utils.zsh exists if not install it from repo
 if [ ! -f "$HOME/.zsh/utils.zsh" ]; then
     log_info "utils.zsh not found. Downloading from the repository..."
