@@ -24,7 +24,6 @@ fi
 
 # Re-enable interactive prompts
 unset NON_INTERACTIVE
-clear
 
 # Set Homebrew in the environment
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
