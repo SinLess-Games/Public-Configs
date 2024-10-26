@@ -181,10 +181,16 @@ setopt hist_ignore_all_dups
 export GITSTATUS_UPDATE_INTERVAL=5
 export GITSTATUS_LOG_LEVEL=DEBUG
 
+# Handle the compinit warnings by removing outdated cache files in batches
 if [ -f ~/.zcompdump ]; then
   echo "[INFO] Removing outdated zcompdump files..."
-  rm -f ~/.zcompdump*  # Forced removal without confirmation
+  find ~ -name '.zcompdump*' -type f -print0 | xargs -0 rm -f  # Remove all zcompdump files in batches
 fi
+
+# Clear oh-my-zsh cache files if too many exist to avoid argument list issues
+echo "[INFO] Cleaning up excessive oh-my-zsh cache files..."
+find ~/.oh-my-zsh -type f -name '*.zwc' -print0 | xargs -0 rm -f
+
 autoload -Uz compinit && compinit -C
 
 POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
