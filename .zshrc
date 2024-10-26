@@ -209,3 +209,11 @@ autoload -Uz compinit && compinit -C
 # Prevent Powerlevel10k from trying to initialize too many elements.
 POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 POWERLEVEL9K_INSTANT_PROMPT=off
+
+# Customize the prompt to show only the root folder of the repository and the directories within it
+
+# Define the PROMPT_DIRTRIM to control how many parent directories are shown
+PROMPT_DIRTRIM=1
+
+# Customize the prompt to start from the repository root
+PROMPT='%~ > '
