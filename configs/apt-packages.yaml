@@ -1,0 +1,42 @@
+packages:
+  # Core system packages required for functionality
+  # -----------------------------------------
+  - pv
+  - git
+  - curl
+  - zsh
+  - pipx
+  - wget
+  - doxygen
+  # -----------------------------------------
+
+  # Network tools
+  # -----------------------------------------
+  - nmap                # Network scanning tool
+  - net-tools           # Networking utilities
+
+  # Workspace tools
+  # -----------------------------------------
+  - nano                # Text editor
+  - vim                 # Text editor
+  - tmux                # Terminal multiplexer
+  - htop                # System monitor
+  - tree                # Directory tree viewer
+  - jq                  # JSON processor
+  - yq                  # YAML processor
+
+  # Development tools
+  # -----------------------------------------
+  - build-essential     # Compilation and build tools
+  - cmake               # Build system generator
+  - gdb                 # GNU debugger
+  - valgrind            # Memory debugging and profiling tool
+
+  # Python tools
+  # -----------------------------------------
+  - python3             # Python 3 interpreter
+  - python3-pip         # Python 3 package manager
+
+  # Node.js tools
+  # -----------------------------------------
+  - nvm                 # Node Version Manager

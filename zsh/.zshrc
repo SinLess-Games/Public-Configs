@@ -15,51 +15,41 @@
 if [ -f "$HOME/.zsh/utils.zsh" ]; then
     source "$HOME/.zsh/utils.zsh"
 else
-    curl -o "$HOME/.zsh/utils.zsh" "https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/utils.zsh"  /dev/null 2>&1
+    curl -o "$HOME/.zsh/utils.zsh" "https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/utils.zsh" >/dev/null 2>&1
     source "$HOME/.zsh/utils.zsh"
 fi
 
-# ---------------------------------------------------------------------------
-# Section 1: Download the scripts folder and load scripts
-# ---------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# Section 1: Configure environment
+# ------------------------------------------------------------------------------
 
-# Check if the scripts folder exists
-if [ ! -d "$HOME/.zsh/scripts" ]; then
-    log_info "Scripts folder not found. Downloading from the repository..."
+# Set the default editor to nano
+export EDITOR="nano"
 
-    # Create the scripts folder
-    mkdir -p "$HOME/.zsh/scripts"
-
-    # Base URL for the GitHub repo where scripts are located
-    base_url="https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/scripts/"
-
-    # List of scripts to download
-    scripts=("anscii.zsh" "homebrew.zsh" "zsh-plugins.zsh")  # Add other script names here
-
-    # Download each script from the GitHub repo
-    for script in "${scripts[@]}"; do
-        if curl -o "$HOME/.zsh/scripts/$script" "${base_url}${script}"; then
-            log_info "$script downloaded successfully."
-        else
-            log_error "Failed to download $script."
-        fi
-    done
-
-    log_info "All scripts downloaded successfully!"
-else
-    log_info "Scripts folder already exists. Skipping download."
+# Activate SSH agent if not running
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    log_info "Starting SSH agent..."
+    eval "$(ssh-agent -s)" >/dev/null
 fi
 
-# ---------------------------------------------------------------------------
-# Section 2: Source the scripts
-# ---------------------------------------------------------------------------
+# Add local and usr bin to path
+export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
 
-# Source each script in the scripts folder
-for script in "$HOME/.zsh/scripts/"*.zsh; do
-    if [ -f "$script" ]; then
-        source "$script"
-        log_info "Loaded $script"
-    else
-        log_warn "No script found in $script."
-    fi
-done
+# Zsh completion
+autoload -Uz compinit
+compinit
+
+# ZSH environment variables
+export ZSH="$HOME/.oh-my-zsh"
+export ZSH_CUSTOM="$ZSH/custom"
+
+# History configuration
+HISTFILE=~/.zsh_history
+HISTSIZE=1000
+SAVEHIST=100
+
+# ------------------------------------------------------------------------------
+# Main script
+# ------------------------------------------------------------------------------
+
+log_info "Starting setup; this may take a few minutes..."

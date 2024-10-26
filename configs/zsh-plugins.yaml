@@ -1,0 +1,9 @@
+# List of Zsh plugins to be installed as part of the configuration
+# Each URL points to a GitHub repository containing a plugin
+
+plugins:
+  # Provides as-you-type autosuggestions for command completion
+  - https://github.com/zsh-users/zsh-autosuggestions
+  
+  # Adds syntax highlighting to your Zsh commands for easier readability
+  - https://github.com/zsh-users/zsh-syntax-highlighting
