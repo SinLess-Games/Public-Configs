@@ -51,5 +51,44 @@ SAVEHIST=100
 # ------------------------------------------------------------------------------
 # Main script
 # ------------------------------------------------------------------------------
+function main() {
+    bordered_anscii "SinLess Games LLC"
+    log_info "Starting the script. This may take a few moments..."
 
-log_info "Starting setup; this may take a few minutes..."
+    # Define the steps for the progress bar
+    local total_steps=4  # Update if more tasks are added
+    local step=0
+
+    # Progress Bar Helper
+    function update_progress() {
+        ((step++))
+        progress_bar $((step * 100 / total_steps))
+    }
+
+    # Task 1: Install APT packages
+    source "$HOME/.zsh/scripts/apt.zsh"
+    setup_apt
+    update_progress
+
+    # Task 2: Install Oh My Zsh
+    source "$HOME/.zsh/scripts/ohmyzsh.zsh"
+    setup_ohmyzsh
+    update_progress
+
+    # Task 3: Download and install .p10k.zsh if not present
+    if [ ! -f "$HOME/.p10k.zsh" ]; then
+        log_info "Downloading .p10k.zsh configuration..."
+        curl -o "$HOME/.p10k.zsh" "https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/.p10k.zsh"
+        log_info ".p10k.zsh downloaded successfully."
+    fi
+    update_progress
+
+    # Task 4: Set Powerlevel10k theme
+    source "$HOME/.p10k.zsh"
+    log_info "Powerlevel10k theme set."
+    update_progress
+
+    log_info "Setup complete!"
+}
+
+main

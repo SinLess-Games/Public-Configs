@@ -1,13 +1,18 @@
-function setup_p10k() {
-  # download p10k theme if not exists
-    if [ ! -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
-        log_info "Powerlevel10k theme not found. Downloading from the repository..."
-        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-        log_info "Powerlevel10k theme downloaded successfully!"
+function setup_ohmyzsh() {
+    # Install Oh My Zsh if it does not already exist
+    if [ ! -d "$HOME/.oh-my-zsh" ]; then
+        log_info "Oh My Zsh not found. Downloading and installing..."
+        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+        log_info "Oh My Zsh installed successfully!"
     else
-        log_info "Powerlevel10k theme already exists. Skipping download."
+        log_info "Oh My Zsh already installed. Skipping installation."
     fi
-
-    # Set ZSH_THEME="powerlevel10k/powerlevel10k" in ~/.zshrc
-    sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' ~/.zshrc
+    
+    # Set the Zsh theme to Powerlevel10k in .zshrc if not already set
+    if ! grep -q 'ZSH_THEME="powerlevel10k/powerlevel10k"' ~/.zshrc; then
+        log_info "Setting Powerlevel10k as the default theme in .zshrc"
+        sed -i 's/^ZSH_THEME=".*"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' ~/.zshrc
+    else
+        log_info "Powerlevel10k theme is already set in .zshrc"
+    fi
 }

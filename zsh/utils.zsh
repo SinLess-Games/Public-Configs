@@ -105,27 +105,25 @@ done
 # Section 4: Progress bar
 # ---------------------------------------------------------------------------
 
-# create a reusable progress bar function for scripts
+# progress_bar: Display a progress bar tracking the progress of a function
+# Usage: progress_bar <total_steps> <current_step>
 function progress_bar() {
-    local duration=${1}
+    local total_steps="$1"
+    local current_step="$2"
+    local progress=$(( (current_step * 100) / total_steps ))
     local columns=$(tput cols)
-    local progress_char="▓"
-    local empty_char="░"
-    local total_width=$((columns - 10))
-    local progress=0
-    local progress_width=0
-    local remaining_width=0
-    local sleep_duration=$((duration / total_width))
+    local bar_width=$(( columns - 20 ))
+    local fill_width=$(( (bar_width * progress) / 100 ))
+    local empty_width=$(( bar_width - fill_width ))
+    
+    # Render the bar with the current progress percentage
+    printf "\rProgress: [%-${fill_width}s%${empty_width}s] %3d%%" \
+           "$(printf "%${fill_width}s" | tr ' ' '▓')" \
+           "$(printf "%${empty_width}s" | tr ' ' '░')" \
+           "$progress"
+}
 
-    while [ $progress -lt $total_width ]; do
-        progress_width=$((progress + 1))
-        remaining_width=$((total_width - progress))
-        printf "\rProgress: [%-${progress_width}s%${remaining_width}s] %d%%" \
-            "$(printf "%0.s$progress_char" $(seq 1 $progress))" \
-            "$(printf "%0.s$empty_char" $(seq 1 $remaining_width))" \
-            $((progress * 100 / total_width))
-        sleep $sleep_duration
-        ((progress++))
-    done
+# Function to complete the bar and move to a new line
+function progress_complete() {
     printf "\n"
 }
