@@ -4,15 +4,40 @@
 # Company: SinLess Games LLC   https://sinlessgamesllc.com
 # License: MIT
 # -------------------------------------------------------------------------------------------------------------
-#                               What this script installs and does
+#                               Script Overview
 #
+# This script installs and configures a secure, consistent Zsh environment for development.
+# -------------------------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------------------------------
+# Section 0: Homebrew Non-Interactive Installation
+# -------------------------------------------------------------------------------------------------------------
+
+# Temporarily disable interactive prompts
+export NON_INTERACTIVE=1
+
+# Install Homebrew if not installed
+if ! command -v brew &>/dev/null; then
+  echo "Installing Homebrew in non-interactive mode..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+# Re-enable interactive prompts
+unset NON_INTERACTIVE
+clear
+
+# Set Homebrew in the environment
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+
 # -------------------------------------------------------------------------------------------------------------
 # Section 1: ASCII Art and Environment Setup
 # -------------------------------------------------------------------------------------------------------------
-# Generates ASCII art and sets up environment variables, paths, history, and autocomplete.      
 
-# ASCII Art Function
-sudo apt-get install -y figlet
+# ASCII Art Installation
+if ! command -v figlet &>/dev/null; then
+    sudo apt-get update && sudo apt-get install -y figlet
+fi
 
 ascii_art() {
     local input_string="$1"
@@ -31,45 +56,18 @@ ascii_art() {
 
     local ascii_output=$(figlet -w "$art_width" -f slant "$input_string")
 
-    echo -e "${border_color}"
-    for ((i = 0; i < terminal_width; i++)); do
-        echo -n "#"
-    done
-    echo
-
+    echo -e "${border_color}$(printf '#%.0s' $(seq 1 $terminal_width))"
     while IFS= read -r line; do
-        local line_length=${#line}
-        local space_padding=$(( (art_width - line_length) / 2 ))
-        local right_padding=$((art_width - line_length - space_padding))
-
-        echo -en "${border_color}##${fill_color}"
-        printf '%*s' "$space_padding" | tr ' ' '.'
-        echo -en "${art_color}"
-        for ((i=0; i<${#line}; i++)); do
-            char="${line:$i:1}"
-            if [[ "$char" == " " ]]; then
-                echo -en "${fill_color}."
-            else
-                echo -en "${art_color}${char}"
-            fi
-        done
-        echo -en "${fill_color}"
-        printf '%*s' "$right_padding" | tr ' ' '.'
-        echo -en "${border_color}##${reset}"
-        echo
+        local padding=$(( (art_width - ${#line}) / 2 ))
+        printf "${border_color}##${fill_color}%*s${art_color}%s${fill_color}%*s${border_color}##${reset}\n" \
+            "$padding" "" "$line" "$padding" ""
     done <<< "$ascii_output"
-
-    echo -en "${border_color}"
-    for ((i = 0; i < terminal_width; i++)); do
-        echo -n "#"
-    done
-    echo -e "${reset}"
+    echo -e "${border_color}$(printf '#%.0s' $(seq 1 $terminal_width))${reset}"
 }
 
 # Generate ASCII Art
 clear
 ascii_art "SinLess Games LLC Development Packet."
-
 
 # -------------------------------------------------------------------------------------------------------------
 # Section 2: Environment Setup
@@ -83,22 +81,14 @@ fi
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-
-# Set Zsh as the default shell
 export SHELL=/bin/zsh
 
-# Path to your Oh My Zsh installation
+# Define Oh My Zsh paths
 export ZSH="$HOME/.oh-my-zsh"
 export ZSH_CUSTOM="$ZSH/custom"
 
-# Add Ruby to the PATH for colorls
-export PATH="$HOME/.local/share/gem/ruby/3.1.0/bin:$PATH"
-
-# Add local bin to the PATH
-export PATH="$PATH:/usr/local/bin"
-
-# Add Go to the PATH
-export PATH="$HOME/go/bin:$PATH"
+# Update PATH for other programs
+export PATH="$HOME/.local/share/gem/ruby/3.1.0/bin:$PATH:/usr/local/bin:$HOME/go/bin:$PATH"
 
 # Enable command history and autocomplete
 HISTFILE=~/.zsh_history
@@ -107,17 +97,17 @@ SAVEHIST=1000
 setopt hist_ignore_dups
 autoload -Uz compinit && compinit
 
-# Set the alias for reloading the .zshrc file
+# Alias for reloading .zshrc
 alias reload="source ~/.zshrc"
 
 # -------------------------------------------------------------------------------------------------------------
 # Section 3: Installing Oh My Zsh and Powerlevel10k if not present
 # -------------------------------------------------------------------------------------------------------------
 
-# Install Zsh if not installed
+# Ensure Zsh is installed
 if ! command -v zsh &>/dev/null; then
-  sudo apt install -y zsh
-  chsh -s $(which zsh)
+  sudo apt update && sudo apt install -y zsh
+  chsh -s "$(which zsh)"
 fi
 
 # Install Oh My Zsh if not installed
@@ -126,35 +116,34 @@ if [ ! -d "$ZSH" ]; then
   sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
-# Install Powerlevel10k if not installed
+# Install Powerlevel10k theme if not present
 if [ ! -d "$ZSH_CUSTOM/themes/powerlevel10k" ]; then
-  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$ZSH_CUSTOM/themes/powerlevel10k"
 fi
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
-# Install Zsh Autosuggestions and Syntax Highlighting
-if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
-  git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
-fi
-
-if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
-  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
-fi
+# Install Zsh plugins if not present
+for plugin in zsh-autosuggestions zsh-syntax-highlighting; do
+  if [ ! -d "$ZSH_CUSTOM/plugins/$plugin" ]; then
+    git clone https://github.com/zsh-users/$plugin "$ZSH_CUSTOM/plugins/$plugin"
+  fi
+done
 
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 # -------------------------------------------------------------------------------------------------------------
-# Section 4: Installing Fonts and Other Tools
+# Section 4: Fonts and Tools Installation
 # -------------------------------------------------------------------------------------------------------------
 
-# Install Font Awesome and Nerd Fonts
+# Install fonts and update path
 brew tap homebrew/cask-fonts
-brew install --cask font-awesome
-brew install --cask font-hack-nerd-font
+for font in font-awesome font-hack-nerd-font; do
+    brew install --cask "$font"
+done
 
-# Install additional packages via a function
+# Install additional APT packages
 function install_apt_packages() {
     local packages=("$@")
     sudo apt update
@@ -176,15 +165,14 @@ alias cls="clear"
 # Section 6: Final Source and Prompt
 # -------------------------------------------------------------------------------------------------------------
 
-# Source Zsh plugins
-source $ZSH/oh-my-zsh.sh
-source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Source Zsh and plugins
+source "$ZSH/oh-my-zsh.sh"
+source "$ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
-# Enable Powerlevel10k instant prompt
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# Powerlevel10k instant prompt
+[[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]] && \
+source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 
 # Apply the Powerlevel10k theme
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh

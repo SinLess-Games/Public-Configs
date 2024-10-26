@@ -23,7 +23,7 @@ Key features:
 Run the following command to install the ZSH configuration:
 
 ```zsh
-curl -L -o ~/.zshrc https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/zsh/.zshrc && source ~/.zshrc
+curl -L -o ~/.zshrc https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/.zshrc && source ~/.zshrc
 ```
 
 > **Note**: You can customize the apt packages installed by modifying `~/.config/SinlessGames/apt-packages.yaml`.
