@@ -55,7 +55,8 @@ alias grep="grep --color=auto"    # Grep with color output
 # System update shortcuts
 alias update="sudo apt update && sudo apt upgrade -y"
 
-alias initenv="curl -L -o ~/.zshrc https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/.zshrc && source ~/.zshrc"
+alias initenv="curl -L -o ~/.zshrc https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/zsh/.zshrc && source ~/.zshrc"
+alias zshbackup="cp ~/.zshrc ~/.zshrc.bak"
 
 # Change to commonly used directories
 alias ..="cd .."

@@ -32,14 +32,14 @@ if [ ! -d "$HOME/.zsh/scripts" ]; then
     mkdir -p "$HOME/.zsh/scripts"
 
     # Base URL for the GitHub repo where scripts are located
-    base_url="https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/main/zsh/scripts/"
+    base_url="https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/zsh/scripts/"
 
     # List of scripts to download
     scripts=("anscii.zsh" "homebrew.zsh" "zsh-plugins.zsh" "p10k.zsh" "ohmyzsh.zsh")  # Add other script names here
 
     # Download each script from the GitHub repo
     for script in "${scripts[@]}"; do
-        if curl -o "$HOME/.zsh/scripts/$script" "${base_url}${script}"; then
+        if curl -o "$HOME/.zsh/scripts/$script" "${base_url}${script}" > /dev/null ; then
             log_info "$script downloaded successfully."
         else
             log_error "Failed to download $script."
@@ -63,7 +63,7 @@ if [ ! -d "$HOME/.configs/SinlessGames" ]; then
     mkdir -p "$HOME/.configs/SinlessGames"
 
     # Base URL for the GitHub repo where configs are located
-    base_url="https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/main/configs/"
+    base_url="https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/configs/"
 
     # List of configuration files to download
     configs=("zsh-plugins.yaml" apt-packages.yaml)  # Add other config file names here
@@ -71,7 +71,7 @@ if [ ! -d "$HOME/.configs/SinlessGames" ]; then
     # check if config file exists on hosts system and if not download it
     for config in "${configs[@]}"; do
         if [ ! -f "$HOME/.configs/SinlessGames/$config" ]; then
-            if curl -o "$HOME/.configs/SinlessGames/$config" "${base_url}${config}"; then
+            if curl -o "$HOME/.configs/SinlessGames/$config" "${base_url}${config}" > /dev/null; then
                 log_info "$config downloaded successfully."
             else
                 log_error "Failed to download $config."
@@ -127,15 +127,21 @@ function progress_bar() {
 function progress_complete() {
     printf "\n"
 }
-
 # ---------------------------------------------------------------------------
 # Section 5: uninstall script
 # ---------------------------------------------------------------------------
 
 # uninstall: Uninstall the Zsh configuration and restore the original configuration
 function uninstall() {
-    # Ask user if they are sure they want to uninstall and warnthem that this will uninstall everything
-    read -p "Are you sure you want to uninstall the Zsh configuration? [y/N]: " confirm
+    # Check if the -y flag is set for automatic confirmation
+    if [[ "$1" == "-y" ]]; then
+        confirm="y"
+    else
+        # Ask user for confirmation
+        echo -n "Are you sure you want to uninstall the Zsh configuration? [y/N]: "
+        read confirm
+    fi
+
     if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
         log_info "Uninstall cancelled."
         return
@@ -143,16 +149,16 @@ function uninstall() {
 
     log_info "Uninstalling the Zsh configuration..."
 
-    # remove config files
-    rm -rf "$HOME/.configs.SinlessGames"
+    # Remove config files
+    rm -rf "$HOME/.configs/SinlessGames"
 
-    # remove the scripts folder
+    # Remove the scripts folder
     rm -rf "$HOME/.zsh/scripts"
 
-    # remove the .p10k.zsh file
+    # Remove the .p10k.zsh file
     rm -f "$HOME/.p10k.zsh"
 
-    # uninstall Oh My Zsh
+    # Uninstall Oh My Zsh
     if [ -d "$HOME/.oh-my-zsh" ]; then
         log_info "Uninstalling Oh My Zsh..."
         uninstall_ohmyzsh
@@ -160,7 +166,7 @@ function uninstall() {
         log_info "Oh My Zsh not found. Skipping uninstall."
     fi
 
-    # uninstall Homebrew
+    # Uninstall Homebrew
     if command -v brew &> /dev/null; then
         log_info "Uninstalling Homebrew..."
         uninstall_homebrew
@@ -168,17 +174,17 @@ function uninstall() {
         log_info "Homebrew not found. Skipping uninstall."
     fi
 
-    # remove utils.zsh
+    # Remove utils.zsh
     rm -f "$HOME/.zsh/utils.zsh"
 
     log_info "Uninstall complete!"
 
-    # replace the .zshrc file with the original
+    # Replace the .zshrc file with the original
     if [ -f "$HOME/.zshrc.bak" ]; then
         mv "$HOME/.zshrc.bak" "$HOME/.zshrc"
         log_info "Restored original .zshrc file."
     else
-        log_warn "Backup .zshrc file not found. Manual intervention required."
+        log_warn "Backup .zshrc file not found. Downloading the original .zshrc file from the repository."
+        curl -o "$HOME/.zshrc" "https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/zsh/default.zshrc" > /dev/null
     fi
 }
-
