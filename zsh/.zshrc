@@ -18,9 +18,9 @@ if [ ! -f "$HOME/.zsh/utils.zsh" ]; then
     log_info "utils.zsh not found. Downloading from the repository..."
     curl -o "$HOME/.zsh/utils.zsh" "https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/zsh/utils.zsh"
     echo "utils.zsh downloaded successfully!"
-
-    source "$HOME/.zsh/utils.zsh"
 fi
+
+source "$HOME/.zsh/utils.zsh"
 
 # ------------------------------------------------------------------------------
 # Section 1: download the scripts folder and load scripts
