@@ -1,3 +1,21 @@
+# Check if running in Zsh; if not, install and switch to Zsh
+if [ -z "$ZSH_VERSION" ]; then
+  echo "You are not running Zsh. Setting up Zsh..."
+
+  # Install Zsh if not installed
+  if ! command -v zsh &>/dev/null; then
+    echo "Zsh not found. Installing Zsh..."
+    sudo apt update && sudo apt install -y zsh
+  fi
+
+  # Set Zsh as the default shell
+  chsh -s "$(which zsh)"
+
+  # Relaunch Zsh to apply changes
+  exec zsh
+  return
+fi
+
 # -------------------------------------------------------------------------------------------------------------
 # Zsh Configuration Script
 # Author: Tim Pierce
@@ -85,10 +103,8 @@ export PATH="$HOME/.local/share/gem/ruby/3.1.0/bin:$PATH:/usr/local/bin:$HOME/go
 HISTFILE=~/.zsh_history
 HISTSIZE=1000
 SAVEHIST=1000
-if [ -n "$ZSH_VERSION" ]; then
-  setopt hist_ignore_dups
-  autoload -Uz compinit && compinit
-fi
+setopt hist_ignore_dups
+autoload -Uz compinit && compinit
 
 # Alias for reloading .zshrc
 alias reload="source ~/.zshrc"
@@ -152,16 +168,13 @@ alias cls="clear"
 # -------------------------------------------------------------------------------------------------------------
 
 # Source Zsh and plugins
-if [ -n "$ZSH_VERSION" ]; then
-  source "$ZSH/oh-my-zsh.sh"
-  source "$ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
-  source "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-fi
+source "$ZSH/oh-my-zsh.sh"
+source "$ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
 # Powerlevel10k instant prompt
-if [ -n "$ZSH_VERSION" ] && [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+[[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]] && \
+source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 
 # Apply the Powerlevel10k theme
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
