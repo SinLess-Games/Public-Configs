@@ -127,3 +127,58 @@ function progress_bar() {
 function progress_complete() {
     printf "\n"
 }
+
+# ---------------------------------------------------------------------------
+# Section 5: uninstall script
+# ---------------------------------------------------------------------------
+
+# uninstall: Uninstall the Zsh configuration and restore the original configuration
+function uninstall() {
+    # Ask user if they are sure they want to uninstall and warnthem that this will uninstall everything
+    read -p "Are you sure you want to uninstall the Zsh configuration? [y/N]: " confirm
+    if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+        log_info "Uninstall cancelled."
+        return
+    fi
+
+    log_info "Uninstalling the Zsh configuration..."
+
+    # remove config files
+    rm -rf "$HOME/.configs.SinlessGames"
+
+    # remove the scripts folder
+    rm -rf "$HOME/.zsh/scripts"
+
+    # remove the .p10k.zsh file
+    rm -f "$HOME/.p10k.zsh"
+
+    # uninstall Oh My Zsh
+    if [ -d "$HOME/.oh-my-zsh" ]; then
+        log_info "Uninstalling Oh My Zsh..."
+        uninstall_ohmyzsh
+    else
+        log_info "Oh My Zsh not found. Skipping uninstall."
+    fi
+
+    # uninstall Homebrew
+    if command -v brew &> /dev/null; then
+        log_info "Uninstalling Homebrew..."
+        uninstall_homebrew
+    else
+        log_info "Homebrew not found. Skipping uninstall."
+    fi
+
+    # remove utils.zsh
+    rm -f "$HOME/.zsh/utils.zsh"
+
+    log_info "Uninstall complete!"
+
+    # replace the .zshrc file with the original
+    if [ -f "$HOME/.zshrc.bak" ]; then
+        mv "$HOME/.zshrc.bak" "$HOME/.zshrc"
+        log_info "Restored original .zshrc file."
+    else
+        log_warn "Backup .zshrc file not found. Manual intervention required."
+    fi
+}
+
