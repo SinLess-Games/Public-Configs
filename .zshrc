@@ -178,3 +178,34 @@ source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 
 # Apply the Powerlevel10k theme
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+
+
+# -------------------------------------------------------------------------------------------------------------
+# Section 7: extra changes
+# -------------------------------------------------------------------------------------------------------------
+
+# Reduce the frequency of autocompletion cache creation to avoid "argument list too long" issues.
+zstyle ':completion:*' rehash true
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh/cache
+
+# Limit history and disable duplicate entries in history to reduce memory usage.
+HISTSIZE=500
+SAVEHIST=500
+setopt hist_ignore_all_dups
+
+# Set up a Git status check interval to reduce the load.
+export GITSTATUS_UPDATE_INTERVAL=5
+
+# Enable debugging for Gitstatus if it fails.
+export GITSTATUS_LOG_LEVEL=DEBUG
+
+# Handle the compinit warnings by force rebuilding the cache.
+if [ -f ~/.zcompdump ]; then
+  rm ~/.zcompdump*  # Clear any cached files that might be bloated or outdated
+fi
+autoload -Uz compinit && compinit -C
+
+# Prevent Powerlevel10k from trying to initialize too many elements.
+POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
+POWERLEVEL9K_INSTANT_PROMPT=off
