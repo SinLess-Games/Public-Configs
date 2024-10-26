@@ -84,7 +84,7 @@ ascii_art() {
 
 # Generate ASCII Art
 clear
-ascii_art "SinLess Games LLC Development Packet."
+ascii_art "SinLess Games LLC"
 
 # -------------------------------------------------------------------------------------------------------------
 # Section 2: Environment Setup
