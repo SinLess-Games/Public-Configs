@@ -12,15 +12,14 @@
 # Note: Make sure to update the base URL and script names as needed.
 # ------------------------------------------------------------------------------
 
-# Check if utils.zsh exists, if not, download it from the repo
-if [ ! -f "$HOME/.zsh/utils.zsh" ]; then
+if [ -f "$HOME/.zsh/utils.zsh" ]; then
+    source "$HOME/.zsh/utils.zsh"
+else
     echo "utils.zsh not found. Downloading from the repository..."
     curl -o "$HOME/.zsh/utils.zsh" "https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/utils.zsh"
     echo "utils.zsh downloaded successfully!"
+    source "$HOME/.zsh/utils.zsh"
 fi
-
-# Source utils.zsh to access log functions
-source "$HOME/.zsh/utils.zsh"
 
 # ---------------------------------------------------------------------------
 # Section 1: Download the scripts folder and load scripts
