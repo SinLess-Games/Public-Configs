@@ -15,9 +15,7 @@
 if [ -f "$HOME/.zsh/utils.zsh" ]; then
     source "$HOME/.zsh/utils.zsh"
 else
-    echo "utils.zsh not found. Downloading from the repository..."
-    curl -o "$HOME/.zsh/utils.zsh" "https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/utils.zsh"
-    echo "utils.zsh downloaded successfully!"
+    curl -o "$HOME/.zsh/utils.zsh" "https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/utils.zsh"  /dev/null 2>&1
     source "$HOME/.zsh/utils.zsh"
 fi
 

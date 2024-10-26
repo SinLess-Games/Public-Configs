@@ -25,12 +25,9 @@ function log_error() {
 # Set the default editor to nano
 export EDITOR="nano"
 
-# allow direnv
-eval "$(direnv hook zsh)"
-
 # activate ssh agent and install it if it doesn't exist
 if [ -z "$SSH_AUTH_SOCK" ]; then
-    eval "$(ssh-agent -s)"
+    log_info $(eval "$(ssh-agent -s)")
 fi
 
 # add local and usr bin to path
@@ -44,3 +41,8 @@ compinit
 # ZSH environment variables
 export ZSH="/home/sinless/.oh-my-zsh"
 export ZSH_CUSTOM="$ZSH/custom"
+
+
+HISTFILE=~/.zsh_history
+HISTSIZE=1000
+SAVEHIST=1000
