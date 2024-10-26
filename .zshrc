@@ -14,7 +14,7 @@
 # -------------------------------------------------------------------------------------------------------------
 
 # Temporarily disable interactive prompts
-export NON_INTERACTIVE=1
+export HOMEBREW_NO_INTERACTIVE=1
 
 # Install Homebrew if not installed
 if ! command -v brew &>/dev/null; then
@@ -23,7 +23,7 @@ if ! command -v brew &>/dev/null; then
 fi
 
 # Re-enable interactive prompts
-unset NON_INTERACTIVE
+unset HOMEBREW_NO_INTERACTIVE
 
 # Set Homebrew in the environment
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
@@ -72,14 +72,6 @@ ascii_art "SinLess Games LLC Development Packet."
 # Section 2: Environment Setup
 # -------------------------------------------------------------------------------------------------------------
 
-# Install Homebrew if not installed
-if ! command -v brew &>/dev/null; then
-  echo "Installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-fi
-
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 export SHELL=/bin/zsh
 
 # Define Oh My Zsh paths
@@ -93,8 +85,10 @@ export PATH="$HOME/.local/share/gem/ruby/3.1.0/bin:$PATH:/usr/local/bin:$HOME/go
 HISTFILE=~/.zsh_history
 HISTSIZE=1000
 SAVEHIST=1000
-setopt hist_ignore_dups
-autoload -Uz compinit && compinit
+if [ -n "$ZSH_VERSION" ]; then
+  setopt hist_ignore_dups
+  autoload -Uz compinit && compinit
+fi
 
 # Alias for reloading .zshrc
 alias reload="source ~/.zshrc"
@@ -133,23 +127,16 @@ done
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 # -------------------------------------------------------------------------------------------------------------
-# Section 4: Fonts and Tools Installation
+# Section 4: Fonts Installation (Linux-only workaround)
 # -------------------------------------------------------------------------------------------------------------
 
-# Install fonts and update path
-brew tap homebrew/cask-fonts
-for font in font-awesome font-hack-nerd-font; do
-    brew install --cask "$font"
-done
-
-# Install additional APT packages
-function install_apt_packages() {
-    local packages=("$@")
-    sudo apt update
-    for package in "${packages[@]}"; do
-        sudo apt install -y "$package"
+# Skip Homebrew Cask fonts installation if on Linux, as it's macOS-specific
+if [[ "$OSTYPE" != "linux-gnu"* ]]; then
+    brew tap homebrew/cask-fonts
+    for font in font-awesome font-hack-nerd-font; do
+        brew install --cask "$font"
     done
-}
+fi
 
 # -------------------------------------------------------------------------------------------------------------
 # Section 5: Aliases
@@ -165,13 +152,16 @@ alias cls="clear"
 # -------------------------------------------------------------------------------------------------------------
 
 # Source Zsh and plugins
-source "$ZSH/oh-my-zsh.sh"
-source "$ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
-source "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+if [ -n "$ZSH_VERSION" ]; then
+  source "$ZSH/oh-my-zsh.sh"
+  source "$ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  source "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
 
 # Powerlevel10k instant prompt
-[[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]] && \
-source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+if [ -n "$ZSH_VERSION" ] && [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
 # Apply the Powerlevel10k theme
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
