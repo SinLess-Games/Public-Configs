@@ -52,6 +52,7 @@ SAVEHIST=100
 # Main script
 # ------------------------------------------------------------------------------
 function main() {
+    sudo apt-get install figlet -y > /dev/null 2>&1
     bordered_anscii "SinLess Games LLC"
     log_info "Starting the script. This may take a few moments..."
 

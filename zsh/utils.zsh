@@ -32,7 +32,7 @@ if [ ! -d "$HOME/.zsh/scripts" ]; then
     mkdir -p "$HOME/.zsh/scripts"
 
     # Base URL for the GitHub repo where scripts are located
-    base_url="https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/zsh/scripts/"
+    base_url="https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/main/zsh/scripts/"
 
     # List of scripts to download
     scripts=("anscii.zsh" "homebrew.zsh" "zsh-plugins.zsh" "p10k.zsh" "ohmyzsh.zsh")  # Add other script names here
@@ -63,7 +63,7 @@ if [ ! -d "$HOME/.configs/SinlessGames" ]; then
     mkdir -p "$HOME/.configs/SinlessGames"
 
     # Base URL for the GitHub repo where configs are located
-    base_url="https://raw.githubusercontent.com/SinLess-Games/Public-Configs/main/configs/"
+    base_url="https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/main/configs/"
 
     # List of configuration files to download
     configs=("zsh-plugins.yaml" apt-packages.yaml)  # Add other config file names here
