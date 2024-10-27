@@ -29,8 +29,14 @@ if [ ! -f "$HOME/scripts/utils.zsh" ]; then
   curl -sL https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/scripts/utils.zsh -o "$HOME/scripts/utils.zsh"
 fi
 
+if [ ! -f "$HOME/scripts/prompt-mod.zsh" ]; then
+  echo "[ERROR] Required prompt modification script not found. Exiting..."
+  curl -sL https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/scripts/prompt-mod.zsh -o "$HOME/scripts/prompt-mod.zsh"
+fi
+
 # Source utility functions and plugin setup
 source "$HOME/scripts/utils.zsh"
+source "$HOME/scripts/prompt-mod.zsh"
 
 # Environment variables and PATH
 export SHELL=/bin/zsh
@@ -54,11 +60,6 @@ ascii_art "SinLess Games LLC"
 
 # Plugin activation
 source "$ZSH/oh-my-zsh.sh"
-for plugin in "${plugins[@]}"; do
-  if [ -f "$ZSH_CUSTOM/plugins/$plugin/$plugin.plugin.zsh" ]; then
-    source "$ZSH_CUSTOM/plugins/$plugin/$plugin.plugin.zsh"
-  fi
-done
 
 # Prompt and final sourcing
 source "$ZSH/oh-my-zsh.sh"
