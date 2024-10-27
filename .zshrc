@@ -166,3 +166,5 @@ export POWERLEVEL9K_INSTANT_PROMPT=off
 # Key bindings
 bindkey '^I' menu-complete
 bindkey "$terminfo[kcbt]" reverse-menu-complete
+
+alias remove_scripts="rm -rf $HOME/scripts"
