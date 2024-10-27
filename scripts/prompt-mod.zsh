@@ -1,17 +1,22 @@
 # -------------------------------------------------------------------------------------------------------------
-# Custom Prompt Setup - Show Only the Git Root Directory or Current Directory
+# Custom Prompt Setup - Show Git Root Directory with Relative Path or Current Directory
 # -------------------------------------------------------------------------------------------------------------
 
-# Function to get the root directory name of the Git repository or current directory if outside a Git repo
-git_root_or_cwd() {
+# Function to get the root directory of the Git repository and the relative path within it
+git_root_relative_path() {
   if git rev-parse --is-inside-work-tree &>/dev/null; then
-    # Display only the name of the Git repository root
-    basename "$(git rev-parse --show-toplevel)"
+    # Get the Git repository root
+    local git_root
+    git_root=$(git rev-parse --show-toplevel)
+    # Get the relative path from the Git root to the current directory
+    local relative_path="${PWD#$git_root}"
+    # Display the root directory name with relative path
+    printf "%s%s" "$(basename "$git_root")" "$relative_path"
   else
-    # Display the current directory name
+    # Display the current directory name if not in a Git repository
     basename "$PWD"
   fi
 }
 
-# Customize the prompt to show only username, machine, and Git root or current directory
-PROMPT='%F{cyan}%n@%m %F{yellow}$(git_root_or_cwd) %F{white}%# %f'
+# Customize the prompt to show username, machine, Git root with relative path, and prompt symbol
+PROMPT='%F{cyan}%n@%m %F{yellow}$(git_root_relative_path) %F{white}%# %f'
