@@ -27,6 +27,12 @@ fi
 # Ensure scripts directory exists
 mkdir -p "$HOME/scripts"
 
+# Add Homebrew to PATH if installed
+if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+
 # Load ASCII art banner
 clear
 ascii_art "SinLess Games LLC"
