@@ -67,7 +67,7 @@ ascii_art() {
 
 # Plugin Installation
 ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
-ZSH_PLUGINS=(
+ZSH_USER_PLUGINS=(
   'zsh-autocomplete'
   'zsh-syntax-highlighting'
   'zsh-autosuggestions'
@@ -75,7 +75,7 @@ ZSH_PLUGINS=(
   'zsh-history-substring-search'
 )
 
-for plugin in "${ZSH_PLUGINS[@]}"; do
+for plugin in "${ZSH_USER_PLUGINS[@]}"; do
   if [ ! -d "$ZSH_CUSTOM/plugins/$plugin" ]; then
     log_info "Installing $plugin plugin..."
     git clone "https://github.com/zsh-users/$plugin" "$ZSH_CUSTOM/plugins/$plugin"
