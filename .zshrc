@@ -37,6 +37,76 @@ fi
 clear
 ascii_art "SinLess Games LLC"
 
+plugin=(
+    ansible
+    arduino-cli
+    autopep8
+    azure
+    brew
+    colorize
+    colored-man-pages
+    cp
+    docker
+    docker-compose
+    fluxcd
+    gcloud
+    gem
+    gh
+    git
+    git-auto-fetch
+    git-commit
+    git-extras
+    git-flow
+    gitignore
+    git-lfs
+    golang
+    gpg-agent
+    helm
+    heroku
+    history
+    history-substring-search
+    istioctl
+    kind
+    kops
+    kubectl
+    kubectx
+    microk8s
+    minikube
+    mongo-atlas
+    mongocli
+    ng
+    nmap
+    node
+    nodenv
+    npm
+    pep8
+    pip
+    poetry
+    poetry-env
+    postgres
+    pre-commit
+    pylint
+    python
+    react-native
+    redis-cli
+    screen
+    ssh
+    ssh-agent
+    sudo
+    terraform
+    ubuntu
+    urltools
+    virtualenv
+    zsh-interactive-cd
+    zsh-autocomplete
+    zsh-syntax-highlighting
+    zsh-autosuggestions
+    zsh-completions
+    zsh-history-substring-search
+    zsh-interactive-cd
+    zsh-navigation-tools
+)
+
 # Environment variables and PATH
 export SHELL=/bin/zsh
 export ZSH="$HOME/.oh-my-zsh"
