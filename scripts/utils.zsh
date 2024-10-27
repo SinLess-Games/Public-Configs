@@ -136,7 +136,7 @@ plugin=(
 
 # Plugin Installation
 ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
-zsh-users-plugins=(
+export zsh-users-plugins=(
   zsh-autocomplete
   zsh-syntax-highlighting
   zsh-autosuggestions
