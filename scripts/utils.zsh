@@ -67,19 +67,38 @@ ascii_art() {
 
 # Plugin Installation
 ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
-ZSH_USER_PLUGINS=(
-  'zsh-syntax-highlighting'
-  'zsh-autosuggestions'
-  'zsh-completions'
-  'zsh-history-substring-search'
-)
 
-for plugin in "${ZSH_USER_PLUGINS[@]}"; do
-  if [ ! -d "$ZSH_CUSTOM/plugins/$plugin" ]; then
-    log_info "Installing $plugin plugin..."
-    git clone "https://github.com/zsh-users/$plugin" "$ZSH_CUSTOM/plugins/$plugin"
-  fi
-done
+# ZSH COMPLETIONS
+if [ -d "$ZSH_CUSTOM/plugins/zsh-completions" ]; then
+  log_info "zsh-completions plugin already installed."
+else
+  log_info "Installing zsh-completions plugin..."
+    git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions
+fi
+
+# ZSH AUTOSUGGESTIONS
+if [ -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
+  log_info "zsh-autosuggestions plugin already installed."
+else
+  log_info "Installing zsh-autosuggestions plugin..."
+  git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-autosuggestions
+fi
+
+# Zsh history substring search
+if [ -d "$ZSH_CUSTOM/plugins/zsh-history-substring-search" ]; then
+  log_info "zsh-history-substring-search plugin already installed."
+else
+  log_info "Installing zsh-history-substring-search plugin..."
+  git clone https://github.com/zsh-users/zsh-history-substring-search.git ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-history-substring-search
+fi
+
+# ZSH SYNTAX HIGHLIGHTING
+if [ -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
+  log_info "zsh-syntax-highlighting plugin already installed."
+else
+  log_info "Installing zsh-syntax-highlighting plugin..."
+  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-syntax-highlighting
+fi
 
 # Font Installation (Linux only)
 if [[ "$OSTYPE" != "linux-gnu"* ]]; then
