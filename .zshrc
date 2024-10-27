@@ -169,4 +169,10 @@ bindkey "$terminfo[kcbt]" reverse-menu-complete
 
 alias remove_scripts="rm -rf $HOME/scripts"
 
-eval "$(ssh-agent -s)"
+# Start SSH agent if not already running
+if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+    eval "$(ssh-agent -s)"
+fi
+
+ssh-add ~/.ssh/ssh_ca_ed25519
+
