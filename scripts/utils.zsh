@@ -68,13 +68,13 @@ ascii_art() {
 # Plugin Installation
 ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
 ZSH_PLUGINS=(
-  zsh-autocomplete
-  zsh-syntax-highlighting
-  zsh-autosuggestions
-  zsh-completions
-  zsh-history-substring-search
-  zsh-interactive-cd
-  zsh-navigation-tools
+  'zsh-autocomplete'
+  'zsh-syntax-highlighting'
+  'zsh-autosuggestions'
+  'zsh-completions'
+  'zsh-history-substring-search'
+  'zsh-interactive-cd'
+  'zsh-navigation-tools'
 )
 
 for plugin in "${ZSH_PLUGINS[@]}"; do
