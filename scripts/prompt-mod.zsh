@@ -1,17 +1,17 @@
 # -------------------------------------------------------------------------------------------------------------
-# Custom Prompt Setup - Display Only Root of Git Repository
+# Custom Prompt Setup - Show Only the Git Root Directory or Current Directory
 # -------------------------------------------------------------------------------------------------------------
 
-# Function to display the root of the current Git repository or the current directory if not in a Git repo
-git_root_prompt() {
+# Function to get the root directory name of the Git repository or current directory if outside a Git repo
+git_root_or_cwd() {
   if git rev-parse --is-inside-work-tree &>/dev/null; then
-    # Get the top-level directory of the Git repository
-    git rev-parse --show-toplevel | xargs basename
+    # Display only the name of the Git repository root
+    basename "$(git rev-parse --show-toplevel)"
   else
-    # If not in a Git repository, display the current directory's name
+    # Display the current directory name
     basename "$PWD"
   fi
 }
 
-# Customize the prompt to include only the Git root directory
-PROMPT='%F{cyan}%n@%m %F{yellow}$(git_root_prompt) %F{white}%# %f'
+# Customize the prompt to show only username, machine, and Git root or current directory
+PROMPT='%F{cyan}%n@%m %F{yellow}$(git_root_or_cwd) %F{white}%# %f'
