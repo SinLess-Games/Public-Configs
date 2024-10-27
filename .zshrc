@@ -24,6 +24,11 @@ fi
 # Overview: This script configures a secure, consistent Zsh environment for development.
 # -------------------------------------------------------------------------------------------------------------
 
+if [ ! -f "$HOME/scripts/utils.zsh" ]; then
+  echo "[ERROR] Required utility functions not found. Exiting..."
+  curl -sL https://raw.githubusercontent.com/SinLess-Games/Public-Configs/refs/heads/main/scripts/utils.zsh -o "$HOME/scripts/utils.zsh"
+fi
+
 # Source utility functions and plugin setup
 source "$HOME/scripts/utils.zsh"
 
