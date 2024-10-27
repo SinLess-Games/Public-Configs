@@ -10,15 +10,15 @@ RESET_COLOR="\e[0m"
 
 # Logging Functions
 log_info() {
-  echo -e "${COLOR_INFO}[INFO] $1${RESET_COLOR}"
+  printf "${COLOR_INFO}[INFO] %s${RESET_COLOR}\n" "$1"
 }
 
 log_warn() {
-  echo -e "${COLOR_WARN}[WARN] $1${RESET_COLOR}"
+  printf "${COLOR_WARN}[WARN] %s${RESET_COLOR}\n" "$1"
 }
 
 log_error() {
-  echo -e "${COLOR_ERROR}[ERROR] $1${RESET_COLOR}"
+  printf "${COLOR_ERROR}[ERROR] %s${RESET_COLOR}\n" "$1"
 }
 
 # Non-Interactive Homebrew Installation
@@ -52,87 +52,18 @@ ascii_art() {
   local border_width=2
   local art_width=$((terminal_width - border_width * 2))
 
-  local ascii_output=$(figlet -w "$art_width" -f slant "$input_string")
+  local ascii_output
+  ascii_output=$(figlet -w "$art_width" -f slant "$input_string")
 
-  echo -e "${border_color}$(printf '#%.0s' $(seq 1 $terminal_width))"
+  printf "${border_color}%${terminal_width}s${reset}\n" | tr ' ' '#'
   while IFS= read -r line; do
     local padding=$(( (art_width - ${#line}) / 2 ))
     local right_padding=$((art_width - ${#line} - padding))
     printf "${border_color}##${fill_color}%*s${art_color}%s${fill_color}%*s${border_color}##${reset}\n" \
       "$padding" "" "$line" "$right_padding" ""
   done <<< "$ascii_output"
-  echo -e "${border_color}$(printf '#%.0s' $(seq 1 $terminal_width))${reset}"
+  printf "${border_color}%${terminal_width}s${reset}\n" | tr ' ' '#'
 }
-
-plugin=(
-    ansible
-    arduino-cli
-    autopep8
-    azure
-    brew
-    colorize
-    colored-man-pages
-    cp
-    docker
-    docker-compose
-    fluxcd
-    gcloud
-    gem
-    gh
-    git
-    git-auto-fetch
-    git-commit
-    git-extras
-    git-flow
-    gitignore
-    git-lfs
-    golang
-    gpg-agent
-    helm
-    heroku
-    history
-    history-substring-search
-    istioctl
-    kind
-    kops
-    kubectl
-    kubectx
-    microk8s
-    minikube
-    mongo-atlas
-    mongocli
-    ng
-    nmap
-    node
-    nodenv
-    npm
-    pep8
-    pip
-    poetry
-    poetry-env
-    postgres
-    pre-commit
-    pylint
-    python
-    react-native
-    redis-cli
-    screen
-    ssh
-    ssh-agent
-    sudo
-    terraform
-    ubuntu
-    urltools
-    virtualenv
-    zsh-interactive-cd
-    zsh-autocomplete
-    zsh-syntax-highlighting
-    zsh-autosuggestions
-    zsh-completions
-    zsh-history-substring-search
-    zsh-interactive-cd
-    zsh-navigation-tools
-)
 
 # Plugin Installation
 ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
