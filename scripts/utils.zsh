@@ -67,7 +67,7 @@ ascii_art() {
 
 # Plugin Installation
 ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
-export ZSH_PLUGINS=(
+ZSH_PLUGINS=(
   zsh-autocomplete
   zsh-syntax-highlighting
   zsh-autosuggestions
