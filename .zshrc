@@ -168,3 +168,5 @@ bindkey '^I' menu-complete
 bindkey "$terminfo[kcbt]" reverse-menu-complete
 
 alias remove_scripts="rm -rf $HOME/scripts"
+
+eval "$(ssh-agent -s)"
