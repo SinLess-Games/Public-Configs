@@ -170,22 +170,30 @@ source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 # Section 7: Extra Changes
 # -------------------------------------------------------------------------------------------------------------
 
+# Set the default editor to nano
+export EDITOR=nano
+
+ Set zstyle options to enable caching and rehashing
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
 
+# Set the prompt to show the current time, current directory, and Git status
 autoload -Uz vcs_info
 precmd() { vcs_info }
 
+# Set up History settings
+HISTFILE=~/.zsh_history
 HISTSIZE=500
 SAVEHIST=500
+
+# Ignore duplicate commands in history
 setopt hist_ignore_all_dups
 
+# Set up the prompt to show the current time, current directory, and Git status
 zstyle ':vcs_info:git:*' formats '%b '
 
-setopt PROMPT_SUBST
-PROMPT='%F{green}%*%f %F{blue}%~%f %F{red}${vcs_info_msg_0_}%f$ '
-
+# Set up the prompt to show the current time, current directory, and Git status
 export GITSTATUS_UPDATE_INTERVAL=5
 export GITSTATUS_LOG_LEVEL=DEBUG
 
@@ -199,7 +207,15 @@ fi
 echo "[INFO] Cleaning up excessive oh-my-zsh cache files..."
 find ~/.oh-my-zsh -type f -name '*.zwc' -print0 | xargs -0 rm -f
 
+# Set up the autoload and compinit options
 autoload -Uz compinit && compinit -C
 
+# disable the configuration wizard
 POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
+
+# Set the instant prompt to off
 POWERLEVEL9K_INSTANT_PROMPT=off
+
+
+# Set prompt to show the current time, current directory, and Git status
+PROMPT='%F{green}%*%f %F{blue}%~%f %F{red}${vcs_info_msg_0_}%f$ '
