@@ -73,8 +73,6 @@ ZSH_PLUGINS=(
   'zsh-autosuggestions'
   'zsh-completions'
   'zsh-history-substring-search'
-  'zsh-interactive-cd'
-  'zsh-navigation-tools'
 )
 
 for plugin in "${ZSH_PLUGINS[@]}"; do
