@@ -2,20 +2,25 @@
 # Custom Prompt Setup - Show Git Root Directory with Relative Path or Current Directory
 # -------------------------------------------------------------------------------------------------------------
 
-# Function to display the Git repository root with the relative path within it
+# Function to display the Git root directory with the relative path within it
 git_root_relative_path() {
   if git rev-parse --is-inside-work-tree &>/dev/null; then
-    # Get the Git root directory
+    # Get the Git repository root
     local git_root
     git_root=$(git rev-parse --show-toplevel)
-    # Calculate the relative path from the Git root to the current directory
-    local relative_path="${PWD#$git_root}"
-    # Format relative path to start with "/" if it's not the root directory itself
-    [[ -n "$relative_path" ]] && relative_path="/$relative_path"
-    # Display the Git root directory name followed by the relative path
-    printf "%s%s" "$(basename "$git_root")" "$relative_path"
+    
+    # Get the relative path from the Git root to the current directory
+    local relative_path
+    relative_path=$(realpath --relative-to="$git_root" "$PWD")
+    
+    # Display the root name with relative path, ensuring only one slash
+    if [ -n "$relative_path" ]; then
+      printf "%s/%s" "$(basename "$git_root")" "$relative_path"
+    else
+      printf "%s" "$(basename "$git_root")"
+    fi
   else
-    # Display the current directory name if outside of a Git repository
+    # Display just the current directory name if not in a Git repository
     basename "$PWD"
   fi
 }
