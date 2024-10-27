@@ -174,9 +174,17 @@ zstyle ':completion:*' rehash true
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
 
+autoload -Uz vcs_info
+precmd() { vcs_info }
+
 HISTSIZE=500
 SAVEHIST=500
 setopt hist_ignore_all_dups
+
+zstyle ':vcs_info:git:*' formats '%b '
+
+setopt PROMPT_SUBST
+PROMPT='%F{green}%*%f %F{blue}%~%f %F{red}${vcs_info_msg_0_}%f$ '
 
 export GITSTATUS_UPDATE_INTERVAL=5
 export GITSTATUS_LOG_LEVEL=DEBUG
@@ -195,6 +203,3 @@ autoload -Uz compinit && compinit -C
 
 POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 POWERLEVEL9K_INSTANT_PROMPT=off
-
-PROMPT_DIRTRIM=1
-PROMPT='%~ > '
