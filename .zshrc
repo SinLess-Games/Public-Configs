@@ -15,6 +15,10 @@ if [ -z "$ZSH_VERSION" ]; then
   exec zsh
 fi
 
+# Reset PATH to a minimal set for testing
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+
+
 # -------------------------------------------------------------------------------------------------------------
 # Zsh Configuration Script
 # Author: Tim Pierce
