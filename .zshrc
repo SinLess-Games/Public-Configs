@@ -174,5 +174,8 @@ if ! pgrep -u "$USER" ssh-agent > /dev/null; then
     eval "$(ssh-agent -s)"
 fi
 
-ssh-add ~/.ssh/ssh_ed25519
+ssh-add ~/.ssh/id_ed25519.pub
+ssh-add ~/.ssh/ssh_ca_ed25519.pub
+ssh-add ~/.ssh/id_ed25519
+ssh-add ~/.ssh/ssh_ca_ed25519
 
